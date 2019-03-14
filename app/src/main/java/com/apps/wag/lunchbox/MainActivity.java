@@ -17,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
     private Button logIn;
     private TextInputEditText txtUsuario;
     private EditText txtContra;
-    ArrayList<User> listaUserInfo = new ArrayList<>();
+    ArrayList<Usuario> listaUsuarioInfo = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //Array para verificar login
-        listaUserInfo.add(new User("usuario", "usuario2018"));
+        listaUsuarioInfo.add(new Usuario("usuario", "usuario2018"));
 
 
         //CLICK DE BOTONES
@@ -62,12 +62,12 @@ public class MainActivity extends AppCompatActivity {
         txtUsuario = (TextInputEditText) findViewById(R.id.txtUser);
         txtContra = (EditText) findViewById(R.id.txtContra);
 
-        if(!listaUserInfo.isEmpty()) {
+        if(!listaUsuarioInfo.isEmpty()) {
             String username = txtUsuario.getText().toString();
             String password = txtContra.getText().toString();
 
             //Comprueba usuario
-            for (User u: listaUserInfo) {
+            for (Usuario u: listaUsuarioInfo) {
                 if(username.equals(u.getUsuario())) {
                     if (u.matches(password)) {
                         openTabbedMain();
