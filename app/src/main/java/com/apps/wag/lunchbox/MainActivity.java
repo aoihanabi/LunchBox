@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        logIn = (Button) findViewById(R.id.logIn);
+        logIn = (Button) findViewById(R.id.btnLogin);
         logIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
