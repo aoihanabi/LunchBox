@@ -15,6 +15,11 @@ public class RecipeListAdapter extends ArrayAdapter<Recipes> {
     private Context myContext;
     private int myResource;
 
+    //ViewHolder Pattern class
+    static class ViewHolder {
+        TextView recipeTitle;
+    }
+
     public RecipeListAdapter (Context context, int resource, ArrayList<Recipes> objects) {
         super(context, resource, objects);
         myContext = context;
@@ -23,6 +28,7 @@ public class RecipeListAdapter extends ArrayAdapter<Recipes> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+
         int cod = getItem(position).getCod();
         String title = getItem(position).getTitle();
         String duration = getItem(position).getDuration();
@@ -34,11 +40,28 @@ public class RecipeListAdapter extends ArrayAdapter<Recipes> {
 
         Recipes laReceta = new Recipes(cod, title, duration, servings, keenOnCount, madeCount, rateAverage, rateStars);
 
-        LayoutInflater inflater = LayoutInflater.from(myContext);
-        convertView = inflater.inflate(myResource, parent, false);
+        //ViewHolder instance
+        ViewHolder viewHolder;
 
-        TextView txtvTitle = (TextView) convertView.findViewById(R.id.txtv_recipeName);
-        txtvTitle.setText(title);
+        //ViewHolder Pattern
+        //ViewHolder isn't in memory
+        if (convertView == null) {
+            LayoutInflater inflater = LayoutInflater.from(myContext);
+            convertView = inflater.inflate(myResource, parent, false);
+
+            //... so we'll load it
+            viewHolder = new ViewHolder();
+            viewHolder.recipeTitle = (TextView) convertView.findViewById(R.id.txtv_recipeName);
+            convertView.setTag(viewHolder);
+        }
+        //ViewHolder is in memory, no need to reload it
+        else {
+            //... just get it from memory (Tag)
+            viewHolder = (ViewHolder) convertView.getTag();
+        }
+
+        //Set ViewHolder's attributes
+        viewHolder.recipeTitle.setText(title);
 
         return convertView;
     }
