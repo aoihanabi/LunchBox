@@ -31,8 +31,10 @@ public class RecipeListAdapter extends ArrayAdapter<Recipes> {
         int madeCount = getItem(position).getMadeCount();
         float rateAverage = getItem(position).getRateAverage();
         int rateStars = getItem(position).getRateStars();
+        String imgURL = getItem(position).getImage();
 
-        Recipes laReceta = new Recipes(cod, title, duration, servings, keenOnCount, madeCount, rateAverage, rateStars);
+
+        Recipes laReceta = new Recipes(cod, title, duration, servings, keenOnCount, madeCount, rateAverage, rateStars, imgURL);
 
         LayoutInflater inflater = LayoutInflater.from(myContext);
         convertView = inflater.inflate(myResource, parent, false);
