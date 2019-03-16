@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class RecipeListAdapter extends ArrayAdapter<Recipes> {
 
-    private static final String TAG = "RecipeListaAdapter";
+    private static final String TAG = "RecipeListAdapter";
     private Context myContext;
     private int myResource;
 
