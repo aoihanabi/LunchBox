@@ -2,31 +2,31 @@ package com.apps.wag.lunchbox;
 
 public class Usuario {
 
-    private String usuario;
-    private String clave;
+    private String correo;
+    private String contrasenna;
 
-    public Usuario(String usuario, String clave) {
-        this.usuario = usuario;
-        this.clave = clave;
+    public Usuario() {
+
     }
 
-    public boolean matches(String clave) {
-        return this.clave.equals(clave);
+    public Usuario(String correo, String contrasenna) {
+        this.correo = correo;
+        this.contrasenna = contrasenna;
     }
 
-    public String getUsuario() {
-        return usuario;
+    public String getCorreo() {
+        return this.correo;
     }
 
-    public String getClave() {
-        return clave;
+    public String getContrasenna() {
+        return this.contrasenna;
     }
 
-    public void setUsuario(String usuario) {
-        this.usuario = usuario;
+    public void setCorreo(String correo) {
+        this.correo = correo;
     }
 
-    public void setClave(String clave) {
-        this.clave = clave;
+    public void setContrasenna(String contrasenna) {
+        this.contrasenna = contrasenna;
     }
 }
