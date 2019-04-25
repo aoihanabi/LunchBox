@@ -8,6 +8,8 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 
 import android.support.v4.widget.DrawerLayout;
@@ -26,8 +28,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+     implements NavigationView.OnNavigationItemSelectedListener {
 
+    //Cardview things
+    private RecyclerView rvwInicioRecipe;
+    private GridLayoutManager glm;
+    private CardviewInicioAdapter adapter;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -154,7 +160,7 @@ public class MainActivity extends AppCompatActivity
 //            texto = "Hello from Send!";
 //        }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.main_content);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }

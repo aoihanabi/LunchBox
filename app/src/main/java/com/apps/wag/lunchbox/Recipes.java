@@ -9,10 +9,11 @@ public class Recipes {
     private int madeCount;
     private float rateAverage;
     private int rateStars;
-    private String image;
+    /*private String image;*/
+    private int image;
 
     public Recipes(int cod, String title, String duration, String servings, int keenOnCount,
-                   int madeCount, float rateAverage, int rateStars, String image) {
+                   int madeCount, float rateAverage, int rateStars, int image/*String image*/) {
         this.cod = cod;
         this.title = title;
         this.duration = duration;
@@ -88,11 +89,19 @@ public class Recipes {
         this.rateStars = rateStars;
     }
 
-    public String getImage() {
+//    public String getImage() {
+//        return image;
+//    }
+//
+//    public void setImage(String image) {
+//        this.image = image;
+//    }
+
+    public int getImage() {
         return image;
     }
 
-    public void setImage(String image) {
+    public void setImage(int image) {
         this.image = image;
     }
 }

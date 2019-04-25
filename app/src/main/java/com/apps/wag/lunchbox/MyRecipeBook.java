@@ -26,12 +26,12 @@ public class MyRecipeBook extends AppCompatActivity {
         //Instantiate recipes dynamically
         for (int i=0; i<1000; i++) {
             Recipes recipe = new Recipes(i,"Receta "+i+1, "30:00",
-                    "3 platos", 3, 2, (float) 8.5, 4, "drawable://" + R.drawable.fresas);
+                    "3 platos", 3, 2, 8.5f, 4, R.drawable.fresas);
 
             arrayRecetas.add(recipe);
         }
 
-        RecipeListAdapter adaptador = new RecipeListAdapter(this, R.layout.layout_adapter_listview, arrayRecetas);
+        RecipeListAdapter adaptador = new RecipeListAdapter(this, R.layout.layout_recipebook_adapter_listview, arrayRecetas);
         listaRecetas.setAdapter(adaptador);
     }
 }

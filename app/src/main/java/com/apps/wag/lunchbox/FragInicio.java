@@ -2,10 +2,15 @@ package com.apps.wag.lunchbox;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 
 
 ///**
@@ -17,6 +22,10 @@ import android.widget.TextView;
 // * create an instance of this fragment.
 // */
 public class FragInicio extends Fragment {
+
+    private RecyclerView rvwRecipeIni;
+    private GridLayoutManager glm;
+    private CardviewInicioAdapter adapter;
 //    // TODO: Rename parameter arguments, choose names that match
 //    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 //    private static final String ARG_PARAM1 = "param1";
@@ -65,9 +74,31 @@ public class FragInicio extends Fragment {
 
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.frag2_inicio, container, false);
+
+        rvwRecipeIni = (RecyclerView) rootView.findViewById(R.id.rvw_inicio);
+        //glm = new GridLayoutManager(rootView.getContext(), 1);
+
+        rvwRecipeIni.setLayoutManager(new LinearLayoutManager(getActivity()));
+        adapter = new CardviewInicioAdapter(dataSet());
+        rvwRecipeIni.setAdapter(adapter);
+
         return rootView;
     }
 
+    private ArrayList<Recipes> dataSet() {
+        ArrayList<Recipes> data = new ArrayList<>();
+        data.add(new Recipes(1, "Fresa", "30 min", "4 platos", 90, 10, 3.7f, 4, R.drawable.fresas));
+        data.add(new Recipes(2, "Frese", "30 min", "4 platos", 90, 10, 3.7f, 4, R.drawable.fresas));
+        data.add(new Recipes(3, "Fresi", "30 min", "4 platos", 90, 10, 3.7f, 4, R.drawable.fresas));
+        data.add(new Recipes(4, "Freso", "30 min", "4 platos", 90, 10, 3.7f, 4, R.drawable.fresas));
+        data.add(new Recipes(5, "Fresu", "30 min", "4 platos", 90, 10, 3.7f, 4, R.drawable.fresas));
+        data.add(new Recipes(6, "Fresa", "30 min", "4 platos", 90, 10, 3.7f, 4, R.drawable.fresas));
+        data.add(new Recipes(7, "Frese", "30 min", "4 platos", 90, 10, 3.7f, 4, R.drawable.fresas));
+        data.add(new Recipes(8, "Fresi", "30 min", "4 platos", 90, 10, 3.7f, 4, R.drawable.fresas));
+        data.add(new Recipes(9, "Freso", "30 min", "4 platos", 90, 10, 3.7f, 4, R.drawable.fresas));
+
+        return data;
+    }
 //    // TODO: Rename method, update argument and hook method into UI event
 //    public void onButtonPressed(Uri uri) {
 //        if (mListener != null) {
