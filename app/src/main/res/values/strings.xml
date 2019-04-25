@@ -13,4 +13,8 @@
     <string name="infotitle">Sobre mi:</string>
     <string name="info">Mis intereses son..</string>
     <string name="recetario">Mi Recetario</string>
+
+    <string name="nav_header_title">LunchBox</string>
+    <string name="nav_header_subtitle">WAG Developing</string>
+    <string name="nav_header_desc">Navigation header</string>
 </resources>
