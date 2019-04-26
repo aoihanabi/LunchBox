@@ -1,14 +1,22 @@
 package com.apps.wag.lunchbox;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Environment;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import org.apache.http.NameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -18,6 +26,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class Login extends AppCompatActivity {
 
@@ -30,11 +40,31 @@ public class Login extends AppCompatActivity {
     private static final String APP_NAME = "Lunch Box";
     private static final String USERS_FILE = "users.lb";
 
+
+    // Progress Dialog
+    private ProgressDialog pDialog;
+    // Creating JSON Parser object
+    JSONParser jParser = new JSONParser();
+    ArrayList<HashMap<String, String>> usersList;
+
+    // url to get all products list
+    private static String url_all_users = "https://darkreaperto.000webhostapp.com/lb_files/get_all_users.php";
+
+    // JSON Node names
+    private static final String TAG_SUCCESS = "success";
+    private static final String TAG_USERS = "users";
+    private static final String TAG_COD = "cod";
+    private static final String TAG_NAME = "name";
+
+    // users JSONArray
+    JSONArray users = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        cargarUsuarios();
         //Array para verificar login
         //listaUsuarioInfo.add(new Usuario("usuario", "usuario2018"));
 
@@ -42,10 +72,11 @@ public class Login extends AppCompatActivity {
         logIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cargarUsuarios();
+
                 verificarLogin();
             }
         });
+
     }
 
     private void openTabbedMain() {
@@ -93,39 +124,44 @@ public class Login extends AppCompatActivity {
      */
     public boolean cargarUsuarios() {
 
-        System.out.println("DIRECTORIO: " + SD_PATH);
+        // Hashmap for ListView
+        usersList = new ArrayList<HashMap<String, String>>();
+        // Loading users in Background Thread
+        new LoadAllUsers().execute();
 
-        File file = new File(SD_PATH + "/Android/data/" + APP_NAME_PATH + USERS_FILE);
-        System.out.println(file);
-//        appDirectory.mkdirs();
-        if (!file.exists()) {
-            return false;
-        }
-
-        FileInputStream fis = null;
-        try {
-            //fis = openFileInput(file);
-            fis = new FileInputStream(file);
-            InputStreamReader isr = new InputStreamReader(fis);
-            BufferedReader br = new BufferedReader(isr);
-            StringBuilder sb = new StringBuilder();
-            String lineaFile;
-
-            int cont = 0;
-            while ((lineaFile = br.readLine()) != null) {
-                String[] userinfo = lineaFile.toString().split(";"); //Separar lineas
-
-                Usuario user = new Usuario(userinfo[0], userinfo[1]);
-                listaUsuarioInfo.add(user);
-                System.out.println(listaUsuarioInfo.get(cont).getCorreo());
-                cont++;
-            }
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        } finally {
-
-        }
+//        System.out.println("DIRECTORIO: " + SD_PATH);
+//
+//        File file = new File(SD_PATH + "/Android/data/" + APP_NAME_PATH + USERS_FILE);
+//        System.out.println(file);
+////        appDirectory.mkdirs();
+//        if (!file.exists()) {
+//            return false;
+//        }
+//
+//        FileInputStream fis = null;
+//        try {
+//            //fis = openFileInput(file);
+//            fis = new FileInputStream(file);
+//            InputStreamReader isr = new InputStreamReader(fis);
+//            BufferedReader br = new BufferedReader(isr);
+//            StringBuilder sb = new StringBuilder();
+//            String lineaFile;
+//
+//            int cont = 0;
+//            while ((lineaFile = br.readLine()) != null) {
+//                String[] userinfo = lineaFile.toString().split(";"); //Separar lineas
+//
+//                Usuario user = new Usuario(userinfo[0], userinfo[1]);
+//                listaUsuarioInfo.add(user);
+//                System.out.println(listaUsuarioInfo.get(cont).getCorreo());
+//                cont++;
+//            }
+//
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//        } finally {
+//
+//        }
         return true;
     }
     private void verificarLogin() {
@@ -150,7 +186,123 @@ public class Login extends AppCompatActivity {
             }
             System.out.println("Usuario no registrado");
             Toast.makeText(this, "El usuario no está registrado", Toast.LENGTH_LONG);
+            Intent i = new Intent(getApplicationContext(),
+                    NewUserActivity.class);
+            // Closing all previous activities
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(i);
         }
+    }
+    /**
+     * Background Async Task to Load all users by making HTTP Request
+     * */
+    class LoadAllUsers extends AsyncTask<String, String, String> {
+
+        /**
+         * Before starting background thread Show Progress Dialog
+         * */
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog = new ProgressDialog(Login.this);
+            pDialog.setMessage("Loading users. Please wait...");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(false);
+            pDialog.show();
+        }
+
+        /**
+         * getting All users from url
+         * */
+        protected String doInBackground(String... args) {
+            // Building Parameters
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            // getting JSON string from URL
+            JSONObject json = jParser.makeHttpRequest(url_all_users, "GET", params);
+
+            // Check your log cat for JSON reponse
+            Log.d("All Users: ", json.toString());
+
+            try {
+                // Checking for SUCCESS TAG
+                int success = json.getInt(TAG_SUCCESS);
+
+                if (success == 1) {
+                    // users found
+                    // Getting Array of Users
+                    users = json.getJSONArray(TAG_USERS);
+
+                    // looping through All Products
+                    for (int i = 0; i < users.length(); i++) {
+                        JSONObject c = users.getJSONObject(i);
+
+                        // Storing each json item in variable
+                        String id = c.getString(TAG_COD);
+                        String name = c.getString(TAG_NAME);
+
+                        // creating new HashMap
+                        HashMap<String, String> map = new HashMap<String, String>();
+
+                        // adding each child node to HashMap key => value
+                        map.put(TAG_COD, id);
+                        map.put(TAG_NAME, name);
+
+                        // adding HashList to ArrayList
+                        usersList.add(map);
+
+                        Usuario user = new Usuario(c.getString("email"),c.getString("password"));
+                        listaUsuarioInfo.add(user);
+                    }
+                } else {
+                    // no users found
+                    // Launch Add New user Activity
+                    Intent i = new Intent(getApplicationContext(),
+                            NewUserActivity.class);
+                    // Closing all previous activities
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(i);
+                }
+
+                System.out.println("===========================");
+                System.out.println("===========================");
+                System.out.println("===========================");
+                for (int i=0; i<usersList.size(); i++) {
+                    System.out.println(usersList.get(i));
+                }
+                System.out.println("===========================");
+                System.out.println("===========================");
+                System.out.println("===========================");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        /**
+         * After completing background task Dismiss the progress dialog
+         * **/
+        protected void onPostExecute(String file_url) {
+            // dismiss the dialog after getting all products
+            pDialog.dismiss();
+            // updating UI from Background Thread
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    /**
+                     * Updating parsed JSON data into ListView
+                     * */
+//                    ListAdapter adapter = new SimpleAdapter(
+//                            AllUsersActivity.this, productsList,
+//                            R.layout.list_item, new String[] { TAG_PID,
+//                            TAG_NAME},
+//                            new int[] { R.id.pid, R.id.name });
+//                    // updating listview
+//                    setListAdapter(adapter);
+                }
+            });
+
+        }
+
     }
 //    public void load(View v) {
 //
