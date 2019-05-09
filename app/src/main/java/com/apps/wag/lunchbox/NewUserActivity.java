@@ -123,7 +123,6 @@ public class NewUserActivity extends Activity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
             return null;
         }
 

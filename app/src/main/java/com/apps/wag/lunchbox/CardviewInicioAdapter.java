@@ -25,10 +25,10 @@ public class CardviewInicioAdapter extends RecyclerView.Adapter<CardviewInicioAd
         }
     }
 
-    private ArrayList<Recipes> data;
+    private ArrayList<Recipes> recetas;
 
-    public CardviewInicioAdapter(ArrayList<Recipes> data) {
-        this.data = data;
+    public CardviewInicioAdapter(ArrayList<Recipes> recet) {
+        this.recetas = recet;
     }
 
     @Override
@@ -38,7 +38,7 @@ public class CardviewInicioAdapter extends RecyclerView.Adapter<CardviewInicioAd
 
     @Override
     public void onBindViewHolder(crdvwInicioViewHolder holder, int position) {
-        Recipes recipe = data.get(position);
+        Recipes recipe = recetas.get(position);
         holder.imgMusica.setImageResource(recipe.getImage());
         holder.tvNombre.setText(recipe.getTitle());
         holder.tvArtista.setText(String.valueOf(recipe.getRateStars()));
@@ -46,7 +46,7 @@ public class CardviewInicioAdapter extends RecyclerView.Adapter<CardviewInicioAd
 
     @Override
     public int getItemCount() {
-        return data.size();
+        return recetas.size();
     }
 
 

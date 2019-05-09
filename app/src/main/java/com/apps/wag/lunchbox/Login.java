@@ -2,6 +2,7 @@ package com.apps.wag.lunchbox;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.support.design.widget.TextInputEditText;
@@ -35,6 +36,9 @@ public class Login extends AppCompatActivity {
     private TextInputEditText txtUsuario;
     private EditText txtContra;
     ArrayList<Usuario> listaUsuarioInfo = new ArrayList<>();
+    SharedPreferences sesionPref;
+    Intent intent;
+
     private static final String SD_PATH = Environment.getExternalStorageDirectory().getPath();
     private static final String APP_NAME_PATH = "com.wag.lunchbox/";
     private static final String APP_NAME = "Lunch Box";
@@ -59,6 +63,8 @@ public class Login extends AppCompatActivity {
     // users JSONArray
     JSONArray users = null;
 
+    private String codUsu = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +73,8 @@ public class Login extends AppCompatActivity {
         cargarUsuarios();
         //Array para verificar login
         //listaUsuarioInfo.add(new Usuario("usuario", "usuario2018"));
+
+        sesionPref = getSharedPreferences("user_details", MODE_PRIVATE);
 
         logIn = (Button) findViewById(R.id.btnLogin);
         logIn.setOnClickListener(new View.OnClickListener() {
@@ -80,8 +88,12 @@ public class Login extends AppCompatActivity {
     }
 
     private void openTabbedMain() {
-        Intent inten = new Intent(this, MainActivity.class);
-        startActivity(inten);
+        Intent inten = new Intent(Login.this, MainActivity.class);
+        //inten.putExtra("correo", codUsu);//Agregar extra al intent para pasar el dato a otras activity
+
+        if(sesionPref.contains("username") && sesionPref.contains("password")){
+            startActivity(inten);
+        }
     }
 
     public void save(View v) {
@@ -165,32 +177,46 @@ public class Login extends AppCompatActivity {
         return true;
     }
     private void verificarLogin() {
-
+        boolean unregistered = true;
         txtUsuario = (TextInputEditText) findViewById(R.id.txtUsuario);
         txtContra = (EditText) findViewById(R.id.txtContra);
 
         if(!listaUsuarioInfo.isEmpty()) {
-            String username = txtUsuario.getText().toString();
+            String usercorreo = txtUsuario.getText().toString().trim();
             String password = txtContra.getText().toString();
+
 
             //Comprueba usuario
             for (Usuario u: listaUsuarioInfo) {
-                if(username.equals(u.getCorreo())) {
+                if(usercorreo.equals(u.getCorreo())) {
                     if (u.getContrasenna().equals(password)) {
-                        System.out.println("Usuario no registrado");
-                        Toast.makeText(this, "El usuario no está registrado", Toast.LENGTH_LONG);
+                        //SESSION THING
+                        SharedPreferences.Editor editor = sesionPref.edit();
+                        editor.putString("codigo", u.getCodigo());
+                        editor.putString("usermail", usercorreo);
+                        editor.putString("password", password);
+                        editor.putString("username", u.getNomUsuario());
+                        editor.putString("descripcion", u.getDescripcion());
+                        editor.commit();
+
+//                        Toast.makeText(this, "BIENVENIDO " + username,
+//                                Toast.LENGTH_LONG).show();
                         openTabbedMain();
+                        unregistered = false;
                         break;
                     }
                 }
             }
-            System.out.println("Usuario no registrado");
-            Toast.makeText(this, "El usuario no está registrado", Toast.LENGTH_LONG);
-            Intent i = new Intent(getApplicationContext(),
-                    NewUserActivity.class);
-            // Closing all previous activities
-            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(i);
+            if(unregistered) {
+                System.out.println("USUARIO NO REGISTRADO");
+                Toast.makeText(this, "El usuario no está registrado",
+                        Toast.LENGTH_LONG).show();
+                Intent i = new Intent(getApplicationContext(), NewUserActivity.class);
+                //Closing all previous activities
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(i);
+            }
+
         }
     }
     /**
@@ -205,7 +231,7 @@ public class Login extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();
             pDialog = new ProgressDialog(Login.this);
-            pDialog.setMessage("Loading users. Please wait...");
+            pDialog.setMessage("Cargando usuarios. Por favor espere...");
             pDialog.setIndeterminate(false);
             pDialog.setCancelable(false);
             pDialog.show();
@@ -250,8 +276,11 @@ public class Login extends AppCompatActivity {
                         // adding HashList to ArrayList
                         usersList.add(map);
 
-                        Usuario user = new Usuario(c.getString("email"),c.getString("password"));
+                        Usuario user = new Usuario(c.getString("cod"),
+                                c.getString("name"), c.getString("email"),
+                                c.getString("password"), c.getString("description"));
                         listaUsuarioInfo.add(user);
+                        System.out.println("USER: " +user.getCorreo()+" "+user.getContrasenna());
                     }
                 } else {
                     // no users found

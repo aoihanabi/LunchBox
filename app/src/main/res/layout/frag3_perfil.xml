@@ -21,7 +21,7 @@
         android:layout_marginStart="30dp"
         android:layout_marginTop="15dp"
         android:layout_marginEnd="30dp"
-        android:layout_marginBottom="85dp"
+        android:layout_marginBottom="84dp"
         android:minLines="@android:integer/config_longAnimTime"
         android:text="@string/info"
         android:textSize="18sp" />
@@ -48,7 +48,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginStart="86dp"
         android:layout_marginEnd="83dp"
-        android:layout_marginBottom="88dp"
+        android:layout_marginBottom="36dp"
         android:background="@color/Buttons"
         android:text="@string/recetario"
         android:textColor="@drawable/button_text_color" />
@@ -60,7 +60,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="133dp"
         android:layout_marginEnd="30dp"
         android:layout_toEndOf="@+id/imgUserpic"
         android:text="@string/username"
@@ -73,7 +73,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginStart="30dp"
-        android:layout_marginTop="21dp"
+        android:layout_marginTop="74dp"
         android:contentDescription="@string/imgdescrip"
         android:src="@drawable/fresas" />
 

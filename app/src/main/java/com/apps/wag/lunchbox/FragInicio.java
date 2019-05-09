@@ -1,16 +1,27 @@
 package com.apps.wag.lunchbox;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import org.apache.http.NameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 
 ///**
@@ -26,6 +37,23 @@ public class FragInicio extends Fragment {
     private RecyclerView rvwRecipeIni;
     private GridLayoutManager glm;
     private CardviewInicioAdapter adapter;
+
+    //ESPECIFICOS PARA EL PARSEO
+    // JSON Node names
+    private static final String TAG_SUCCESS = "success";
+    private static final String TAG_RECIPES = "recipes";
+    private static final String TAG_COD = "cod";
+    private static final String TAG_NAME = "name";
+    // recipes JSONArray
+    JSONArray recipes = null;
+    // Progress Dialog
+    private ProgressDialog pDialog;
+    // Creating JSON Parser object
+    JSONParser jParser = new JSONParser();
+    ArrayList<HashMap<String, String>> hashListRecipe;
+    ArrayList<Recipes> recetas;
+    // url to get all products list
+    private static String url_all_recipes = "https://darkreaperto.000webhostapp.com/lb_files/get_all_recipes.php";
 //    // TODO: Rename parameter arguments, choose names that match
 //    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 //    private static final String ARG_PARAM1 = "param1";
@@ -74,18 +102,19 @@ public class FragInicio extends Fragment {
 
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.frag2_inicio, container, false);
+        new LoadAllRecipes().execute();
 
         rvwRecipeIni = (RecyclerView) rootView.findViewById(R.id.rvw_inicio);
-        //glm = new GridLayoutManager(rootView.getContext(), 1);
-
         rvwRecipeIni.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new CardviewInicioAdapter(dataSet());
+        adapter = new CardviewInicioAdapter(recetas);
+        //adapter = new CardviewInicioAdapter(dataSet());
         rvwRecipeIni.setAdapter(adapter);
 
         return rootView;
     }
 
     private ArrayList<Recipes> dataSet() {
+
         ArrayList<Recipes> data = new ArrayList<>();
         data.add(new Recipes(1, "Fresa", "30 min", "4 platos", 90, 10, 3.7f, 4, R.drawable.fresas));
         data.add(new Recipes(2, "Frese", "30 min", "4 platos", 90, 10, 3.7f, 4, R.drawable.fresas));
@@ -137,4 +166,112 @@ public class FragInicio extends Fragment {
 //        // TODO: Update argument type and name
 //        void onFragmentInteraction(Uri uri);
 //    }
+
+    /**
+     * Background Async Task to Load all recipes by making HTTP Request
+     * */
+    class LoadAllRecipes extends AsyncTask<String, String, String> {
+
+        /**
+         * Before starting background thread Show Progress Dialog
+         * */
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog = new ProgressDialog(getContext());
+            pDialog.setMessage("Cargando recetas. Por favor espere...");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(false);
+            pDialog.show();
+        }
+
+        /**
+         * getting All recipes from url
+         * */
+        protected String doInBackground(String... args) {
+            // Building Parameters
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            // getting JSON string from URL
+            JSONObject json = jParser.makeHttpRequest(url_all_recipes, "GET", params);
+
+            // Check your log cat for JSON reponse
+            Log.d("All Recipes: ", json.toString());
+
+            try {
+                // Checking for SUCCESS TAG
+                int success = json.getInt(TAG_SUCCESS);
+
+                if (success == 1) {
+                    // recipes found
+                    // Getting Array of Users
+                    recipes = json.getJSONArray(TAG_RECIPES);
+
+                    // looping through All Products
+                    for (int i = 0; i < recipes.length(); i++) {
+                        JSONObject c = recipes.getJSONObject(i);
+
+                        // Storing each json item in variable
+//                        String id = c.getString(TAG_COD);
+//                        String name = c.getString(TAG_NAME);
+//
+//                        // creating new HashMap
+//                        HashMap<String, String> map = new HashMap<String, String>();
+//
+//                        // adding each child node to HashMap key => value
+//                        map.put(TAG_COD, id);
+//                        map.put(TAG_NAME, name);
+//
+//                        // adding HashList to ArrayList
+//                        hashListRecipe.add(map);
+
+                        Recipes recipe = new Recipes(c.getInt("cod"),
+                                c.getString("title"), c.getString("duration"),
+                                c.getString("servings"), c.getInt("keenOnCount"),
+                                c.getInt("madeCount"), (float) c.getDouble("rateAverage"),
+                                c.getInt("rateStars"), R.drawable.fresas);
+
+                        recetas.add(recipe);
+                    }
+                }
+
+                System.out.println("===========================");
+                System.out.println("===========================");
+                System.out.println("===========================");
+                for (int i=0; i<recetas.size(); i++) {
+                    System.out.println(recetas.get(i));
+                }
+                System.out.println("===========================");
+                System.out.println("===========================");
+                System.out.println("===========================");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        /**
+         * After completing background task Dismiss the progress dialog
+         * **/
+        protected void onPostExecute(String file_url) {
+            // dismiss the dialog after getting all products
+            pDialog.dismiss();
+            // updating UI from Background Thread
+            getActivity().runOnUiThread(new Runnable() {
+                public void run() {
+                    /**
+                     * Updating parsed JSON data into ListView
+                     * */
+//                    ListAdapter adapter = new SimpleAdapter(
+//                            AllUsersActivity.this, productsList,
+//                            R.layout.list_item, new String[] { TAG_PID,
+//                            TAG_NAME},
+//                            new int[] { R.id.pid, R.id.name });
+//                    // updating listview
+//                    setListAdapter(adapter);
+                }
+            });
+
+        }
+
+    }
 }

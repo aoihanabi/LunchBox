@@ -1,9 +1,9 @@
 package com.apps.wag.lunchbox;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -18,14 +18,12 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 
-import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
      implements NavigationView.OnNavigationItemSelectedListener {
@@ -34,6 +32,9 @@ public class MainActivity extends AppCompatActivity
     private RecyclerView rvwInicioRecipe;
     private GridLayoutManager glm;
     private CardviewInicioAdapter adapter;
+    private String usuarioSesion;
+    SharedPreferences pref;
+    Intent intent;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -55,8 +56,13 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
+
+//        Intent receivedIntent = getIntent();
+//        usuarioSesion = receivedIntent.getStringExtra("codigo");
+        pref = getSharedPreferences("user_details",MODE_PRIVATE);
+        intent = new Intent(MainActivity.this, Login.class);
+        Toast.makeText(this, "Usuario en sesion " + pref.getString("username", null), Toast.LENGTH_LONG).show();
 //        if (!logged) {
 //            Intent pageUp = new Intent(this, Main2Activity.class);
 //            startActivity(pageUp);
@@ -87,6 +93,7 @@ public class MainActivity extends AppCompatActivity
 
 //                System.out.println(getActivity());
                 Intent inten = new Intent(view.getContext(), NewRecipe.class);
+                inten.putExtra("codigo",10);
                 startActivity(inten);
 //                System.out.println(getActivity());
             }
@@ -103,6 +110,8 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
     }
+
+
 
     @Override
     public void onBackPressed() {
