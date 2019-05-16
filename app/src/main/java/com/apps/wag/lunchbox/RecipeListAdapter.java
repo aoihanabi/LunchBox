@@ -46,14 +46,13 @@ public class RecipeListAdapter extends ArrayAdapter<Recipes> {
         String duration = getItem(position).getDuration();
         String servings = getItem(position).getServings();
         int keenOnCount = getItem(position).getKeenOnCount();
-        int madeCount = getItem(position).getMadeCount();
         float rateAverage = getItem(position).getRateAverage();
         int rateStars = getItem(position).getRateStars();
         //String imgURL = getItem(position).getImage();
         int imgURL = getItem(position).getImage();
 
-        Recipes laReceta = new Recipes(cod, title, duration, servings, keenOnCount, madeCount,
-                rateAverage, rateStars, imgURL);
+        Recipes laReceta = new Recipes(cod, title, duration, servings, keenOnCount,
+                rateAverage, rateStars, R.drawable.fresas);
 
 
         //ViewHolder instance
@@ -90,11 +89,11 @@ public class RecipeListAdapter extends ArrayAdapter<Recipes> {
                 .showImageOnLoading(defaultImage).build();
 
         //download and display image from url
-        imageLoader.displayImage( String.valueOf(imgURL), viewHolder.recipePhoto, options);
+        //imageLoader.displayImage( String.valueOf(imgURL), viewHolder.recipePhoto, options);
 
         //Set ViewHolder's attributes
         viewHolder.recipeTitle.setText(title);
-
+        viewHolder.recipePhoto.setImageResource(laReceta.getImage());
         return convertView;
     }
 

@@ -1,5 +1,6 @@
 package com.apps.wag.lunchbox;
 
+import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,39 +15,46 @@ public class CardviewInicioAdapter extends RecyclerView.Adapter<CardviewInicioAd
     class crdvwInicioViewHolder extends RecyclerView.ViewHolder{
 
         ImageView imgMusica;
-        TextView tvNombre;
-        TextView tvArtista;
+        TextView txtTituloReceta;
+        TextView txtDescripReceta;
 
         public crdvwInicioViewHolder(View itemView) {
             super(itemView);
             imgMusica = (ImageView) itemView.findViewById(R.id.img_receta);
-            tvNombre = (TextView) itemView.findViewById(R.id.tv_title);
-            tvArtista = (TextView) itemView.findViewById(R.id.tv_artista);
+            txtTituloReceta = (TextView) itemView.findViewById(R.id.txt_tituloReceta);
+            txtDescripReceta = (TextView) itemView.findViewById(R.id.txt_descripcionReceta);
         }
     }
 
     private ArrayList<Recipes> recetas;
+    private Activity context;
 
-    public CardviewInicioAdapter(ArrayList<Recipes> recet) {
+    public CardviewInicioAdapter(Activity context, ArrayList<Recipes> recet) {
         this.recetas = recet;
+        this.context = context;
     }
 
-    @Override
+
     public crdvwInicioViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new crdvwInicioViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_cardview_inicio, parent, false));
+        return new crdvwInicioViewHolder(LayoutInflater.from(context).inflate(
+                R.layout.layout_cardview_inicio, parent, false));
     }
 
     @Override
     public void onBindViewHolder(crdvwInicioViewHolder holder, int position) {
         Recipes recipe = recetas.get(position);
         holder.imgMusica.setImageResource(recipe.getImage());
-        holder.tvNombre.setText(recipe.getTitle());
-        holder.tvArtista.setText(String.valueOf(recipe.getRateStars()));
+        holder.txtTituloReceta.setText(recipe.getTitle());
+        holder.txtDescripReceta.setText(String.valueOf(recipe.getDuration()));
     }
 
     @Override
     public int getItemCount() {
-        return recetas.size();
+        if(recetas == null) {
+            return 0;
+        } else {
+            return recetas.size();
+        }
     }
 
 

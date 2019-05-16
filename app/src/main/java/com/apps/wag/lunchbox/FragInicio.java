@@ -1,7 +1,10 @@
 package com.apps.wag.lunchbox;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -51,7 +54,7 @@ public class FragInicio extends Fragment {
     // Creating JSON Parser object
     JSONParser jParser = new JSONParser();
     ArrayList<HashMap<String, String>> hashListRecipe;
-    ArrayList<Recipes> recetas;
+    ArrayList<Recipes> recetas = new ArrayList<>();
     // url to get all products list
     private static String url_all_recipes = "https://darkreaperto.000webhostapp.com/lb_files/get_all_recipes.php";
 //    // TODO: Rename parameter arguments, choose names that match
@@ -102,40 +105,42 @@ public class FragInicio extends Fragment {
 
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.frag2_inicio, container, false);
-        new LoadAllRecipes().execute();
 
         rvwRecipeIni = (RecyclerView) rootView.findViewById(R.id.rvw_inicio);
         rvwRecipeIni.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new CardviewInicioAdapter(recetas);
-        //adapter = new CardviewInicioAdapter(dataSet());
-        rvwRecipeIni.setAdapter(adapter);
+
+//        adapter = new CardviewInicioAdapter(getActivity(), dataSet());
+//        rvwRecipeIni.setAdapter(adapter);
+
+        new LoadAllRecipes(getActivity(), rvwRecipeIni).execute();
 
         return rootView;
     }
 
-    private ArrayList<Recipes> dataSet() {
+//    private ArrayList<Recipes> dataSet() {
+//
+////        ArrayList<Recipes> data = new ArrayList<>();
+////        data.add(new Recipes(1, "Fresa", "30 min", "4 platos", 90, 10, 3.7f, 4, R.drawable.fresas));
+////        data.add(new Recipes(2, "Frese", "30 min", "4 platos", 90, 10, 3.7f, 4, R.drawable.fresas));
+////        data.add(new Recipes(3, "Fresi", "30 min", "4 platos", 90, 10, 3.7f, 4, R.drawable.fresas));
+////        data.add(new Recipes(4, "Freso", "30 min", "4 platos", 90, 10, 3.7f, 4, R.drawable.fresas));
+////        data.add(new Recipes(5, "Fresu", "30 min", "4 platos", 90, 10, 3.7f, 4, R.drawable.fresas));
+////        data.add(new Recipes(6, "Fresa", "30 min", "4 platos", 90, 10, 3.7f, 4, R.drawable.fresas));
+////        data.add(new Recipes(7, "Frese", "30 min", "4 platos", 90, 10, 3.7f, 4, R.drawable.fresas));
+////        data.add(new Recipes(8, "Fresi", "30 min", "4 platos", 90, 10, 3.7f, 4, R.drawable.fresas));
+////        data.add(new Recipes(9, "Freso", "30 min", "4 platos", 90, 10, 3.7f, 4, R.drawable.fresas));
+//
+//        return data;
+//    }
 
-        ArrayList<Recipes> data = new ArrayList<>();
-        data.add(new Recipes(1, "Fresa", "30 min", "4 platos", 90, 10, 3.7f, 4, R.drawable.fresas));
-        data.add(new Recipes(2, "Frese", "30 min", "4 platos", 90, 10, 3.7f, 4, R.drawable.fresas));
-        data.add(new Recipes(3, "Fresi", "30 min", "4 platos", 90, 10, 3.7f, 4, R.drawable.fresas));
-        data.add(new Recipes(4, "Freso", "30 min", "4 platos", 90, 10, 3.7f, 4, R.drawable.fresas));
-        data.add(new Recipes(5, "Fresu", "30 min", "4 platos", 90, 10, 3.7f, 4, R.drawable.fresas));
-        data.add(new Recipes(6, "Fresa", "30 min", "4 platos", 90, 10, 3.7f, 4, R.drawable.fresas));
-        data.add(new Recipes(7, "Frese", "30 min", "4 platos", 90, 10, 3.7f, 4, R.drawable.fresas));
-        data.add(new Recipes(8, "Fresi", "30 min", "4 platos", 90, 10, 3.7f, 4, R.drawable.fresas));
-        data.add(new Recipes(9, "Freso", "30 min", "4 platos", 90, 10, 3.7f, 4, R.drawable.fresas));
-
-        return data;
-    }
-//    // TODO: Rename method, update argument and hook method into UI event
+    // TODO: Rename method, update argument and hook method into UI event
 //    public void onButtonPressed(Uri uri) {
 //        if (mListener != null) {
 //            mListener.onFragmentInteraction(uri);
 //        }
 //    }
-//
-//    @Override
+
+
 //    public void onAttach(Context context) {
 //        super.onAttach(context);
 //        if (context instanceof OnFragmentInteractionListener) {
@@ -172,13 +177,21 @@ public class FragInicio extends Fragment {
      * */
     class LoadAllRecipes extends AsyncTask<String, String, String> {
 
+        Activity myContext;
+        RecyclerView recyclerView;
+
+        public LoadAllRecipes(Activity context, RecyclerView rview) {
+            this.myContext = context;
+            this.recyclerView = rview;
+        }
         /**
          * Before starting background thread Show Progress Dialog
          * */
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pDialog = new ProgressDialog(getContext());
+            System.out.println("En PREexecute, SALE ALGO");
+            pDialog = new ProgressDialog(myContext);
             pDialog.setMessage("Cargando recetas. Por favor espere...");
             pDialog.setIndeterminate(false);
             pDialog.setCancelable(false);
@@ -210,7 +223,7 @@ public class FragInicio extends Fragment {
                     for (int i = 0; i < recipes.length(); i++) {
                         JSONObject c = recipes.getJSONObject(i);
 
-                        // Storing each json item in variable
+//                        // Storing each json item in variable
 //                        String id = c.getString(TAG_COD);
 //                        String name = c.getString(TAG_NAME);
 //
@@ -227,22 +240,23 @@ public class FragInicio extends Fragment {
                         Recipes recipe = new Recipes(c.getInt("cod"),
                                 c.getString("title"), c.getString("duration"),
                                 c.getString("servings"), c.getInt("keenOnCount"),
-                                c.getInt("madeCount"), (float) c.getDouble("rateAverage"),
+                                (float) c.getDouble("rateAverage"),
                                 c.getInt("rateStars"), R.drawable.fresas);
 
+                        System.out.println("RECETAS WHERE ARE YOU?" + c.getString("title"));
                         recetas.add(recipe);
                     }
                 }
 
-                System.out.println("===========================");
-                System.out.println("===========================");
-                System.out.println("===========================");
+                System.out.println("+++++++++++++++++++++++++++");
+                System.out.println("+++++++++++++++++++++++++++");
+                System.out.println("+++++++++++++++++++++++++++");
                 for (int i=0; i<recetas.size(); i++) {
                     System.out.println(recetas.get(i));
                 }
-                System.out.println("===========================");
-                System.out.println("===========================");
-                System.out.println("===========================");
+                System.out.println("+++++++++++++++++++++++++++");
+                System.out.println("+++++++++++++++++++++++++++");
+                System.out.println("+++++++++++++++++++++++++++");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -255,21 +269,18 @@ public class FragInicio extends Fragment {
         protected void onPostExecute(String file_url) {
             // dismiss the dialog after getting all products
             pDialog.dismiss();
+
             // updating UI from Background Thread
             getActivity().runOnUiThread(new Runnable() {
                 public void run() {
-                    /**
-                     * Updating parsed JSON data into ListView
-                     * */
-//                    ListAdapter adapter = new SimpleAdapter(
-//                            AllUsersActivity.this, productsList,
-//                            R.layout.list_item, new String[] { TAG_PID,
-//                            TAG_NAME},
-//                            new int[] { R.id.pid, R.id.name });
-//                    // updating listview
-//                    setListAdapter(adapter);
+
+                    System.out.println("POST EXECUTE");
+                    //Actualizar ListView
+                    adapter = new CardviewInicioAdapter(getActivity(), recetas);
+                    rvwRecipeIni.setAdapter(adapter);
                 }
             });
+
 
         }
 

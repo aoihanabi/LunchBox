@@ -4,9 +4,8 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
+import android.os.Bundle;
 import android.util.Log;
 import android.widget.ListView;
 
@@ -16,14 +15,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.sql.SQLOutput;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-public class MyRecipeBook extends AppCompatActivity {
+public class SavedRecipes extends AppCompatActivity {
 
-    private static final String TAG = "MyRecipeBook";
     ListView listaRecetas;
     SharedPreferences userPref;
 
@@ -35,35 +31,19 @@ public class MyRecipeBook extends AppCompatActivity {
     private ProgressDialog pDialog;
     JSONParser jParser = new JSONParser();
     ArrayList<Recipes> recetas = new ArrayList<>();
-    private static String url_get_myrecipes = "https://darkreaperto.000webhostapp.com/lb_files/get_myRecipes.php";
+    private static String url_get_myrecipes = "https://darkreaperto.000webhostapp.com/lb_files/.php";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my_recipe_book);
+        setContentView(R.layout.activity_saved_recipes);
 
-        Log.d(TAG, "onCreate: Started.");
         listaRecetas = (ListView) findViewById(R.id.listMyRecipebook);
         //SESIÓN ACTIVA
         userPref = getSharedPreferences("user_details", MODE_PRIVATE);
 
         new LoadAllRecipes(this, listaRecetas).execute();
-
-         //Recipes r1 = new Recipes(0,"Receta 0", "30:00",  "3 platos", 3, 2, (float) 8.5, 4);
-
-//        ArrayList <Recipes> arrayRecetas = new ArrayList<>();
-//
-//        //Instantiate recipes dynamically
-//        for (int i=0; i<1000; i++) {
-//            Recipes recipe = new Recipes(i,"Receta "+i+1, "30:00",
-//                    "3 platos", 3, 8.5f, 4, R.drawable.fresas);
-//
-//            arrayRecetas.add(recipe);
-//        }
-
-//        RecipeListAdapter adaptador = new RecipeListAdapter(this,
-//                R.layout.layout_recipebook_adapter_listview, arrayRecetas);
-//        listaRecetas.setAdapter(adaptador);
     }
 
     /**
@@ -160,15 +140,14 @@ public class MyRecipeBook extends AppCompatActivity {
                     System.out.println("LISTA RECETAS ++++++++++ " + recetas.size());
                     //Actualizar ListView
                     RecipeListAdapter adaptador =
-                            new RecipeListAdapter(MyRecipeBook.this,
-                            R.layout.layout_recipebook_adapter_listview, recetas);
+                            new RecipeListAdapter(SavedRecipes.this,
+                                    R.layout.layout_recipebook_adapter_listview, recetas);
 
                     listaRecetas.setAdapter(adaptador);
 
-//                    adapter = new CardviewInicioAdapter(getActivity(), recetas);
-//                    rvwRecipeIni.setAdapter(adapter);
                 }
             });
+
 
         }
 

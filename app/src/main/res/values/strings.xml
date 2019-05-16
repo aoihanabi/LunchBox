@@ -8,11 +8,12 @@
     <string name="tab_text_2">Tab 2</string>
     <string name="tab_text_3">Tab 3</string>
     <string name="imgdescrip">Fresas</string>
-    <string name="username">Mi nombre</string>
+    <string name="username">My name</string>
     <string name="email">micorreo@g.com</string>
-    <string name="infotitle">Sobre mi:</string>
-    <string name="info">Mis intereses son..</string>
-    <string name="recetario">Mi Recetario</string>
+    <string name="infotitle">About me:</string>
+    <string name="info">My interests..</string>
+    <string name="recipebook">Saved Recipes</string>
+    <string name="myrecipes">My Recipebook</string>
 
     <string name="nav_header_title">LunchBox</string>
     <string name="nav_header_subtitle">WAG Developing</string>

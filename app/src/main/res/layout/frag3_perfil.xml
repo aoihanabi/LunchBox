@@ -14,7 +14,7 @@
         android:id="@+id/txtUserinfo"
         android:layout_width="wrap_content"
         android:layout_height="231dp"
-        android:layout_above="@+id/btn_recipebook"
+        android:layout_above="@+id/btn_savedrecipes"
         android:layout_below="@+id/txtUsertitle"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
@@ -40,17 +40,29 @@
         android:textSize="14sp" />
 
     <Button
-        android:id="@+id/btn_recipebook"
-        android:layout_width="241dp"
+        android:id="@+id/btn_savedrecipes"
+        android:layout_width="154dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="86dp"
-        android:layout_marginEnd="83dp"
-        android:layout_marginBottom="36dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="40dp"
         android:background="@color/Buttons"
-        android:text="@string/recetario"
+        android:text="@string/recipebook"
+        android:textColor="@drawable/button_text_color" />
+
+    <Button
+        android:id="@+id/btn_recipebook"
+        android:layout_width="157dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginBottom="40dp"
+        android:layout_toStartOf="@+id/btn_savedrecipes"
+        android:background="@color/Buttons"
+        android:text="@string/myrecipes"
         android:textColor="@drawable/button_text_color" />
 
     <TextView

@@ -70,12 +70,8 @@ public class Login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        cargarUsuarios();
-        //Array para verificar login
-        //listaUsuarioInfo.add(new Usuario("usuario", "usuario2018"));
-
-        sesionPref = getSharedPreferences("user_details", MODE_PRIVATE);
-
+        txtUsuario = (TextInputEditText) findViewById(R.id.txtUsuario);
+        txtContra = (EditText) findViewById(R.id.txtContra);
         logIn = (Button) findViewById(R.id.btnLogin);
         logIn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,14 +81,26 @@ public class Login extends AppCompatActivity {
             }
         });
 
+        sesionPref = getSharedPreferences("user_details", MODE_PRIVATE);
+
+        //VERIFICAR QUE EL USUARIO YA ESTÁ EN SESIÓN
+        if (sesionPref.contains("usermail")) {
+            openTabbedMain();
+        }
+
+        cargarUsuarios();
     }
 
     private void openTabbedMain() {
         Intent inten = new Intent(Login.this, MainActivity.class);
         //inten.putExtra("correo", codUsu);//Agregar extra al intent para pasar el dato a otras activity
 
+        //VERIFICA SI EL USUARIO ES CORRECTO PARA INICIAR SESIÓN
         if(sesionPref.contains("username") && sesionPref.contains("password")){
             startActivity(inten);
+
+            //Cerrar la actividad
+            this.finish();
         }
     }
 
@@ -178,8 +186,6 @@ public class Login extends AppCompatActivity {
     }
     private void verificarLogin() {
         boolean unregistered = true;
-        txtUsuario = (TextInputEditText) findViewById(R.id.txtUsuario);
-        txtContra = (EditText) findViewById(R.id.txtContra);
 
         if(!listaUsuarioInfo.isEmpty()) {
             String usercorreo = txtUsuario.getText().toString().trim();
@@ -190,7 +196,7 @@ public class Login extends AppCompatActivity {
             for (Usuario u: listaUsuarioInfo) {
                 if(usercorreo.equals(u.getCorreo())) {
                     if (u.getContrasenna().equals(password)) {
-                        //SESSION THING
+                        //ASIGNAR AL sesionPref LA INFORMACIÓN DEL USUARIO
                         SharedPreferences.Editor editor = sesionPref.edit();
                         editor.putString("codigo", u.getCodigo());
                         editor.putString("usermail", usercorreo);

@@ -6,20 +6,18 @@ public class Recipes {
     private String duration;
     private String servings;
     private int keenOnCount;
-    private int madeCount;
     private float rateAverage;
     private int rateStars;
     /*private String image;*/
     private int image;
 
     public Recipes(int cod, String title, String duration, String servings, int keenOnCount,
-                   int madeCount, float rateAverage, int rateStars, int image/*String image*/) {
+                   float rateAverage, int rateStars, int image/*String image*/) {
         this.cod = cod;
         this.title = title;
         this.duration = duration;
         this.servings = servings;
         this.keenOnCount = keenOnCount;
-        this.madeCount = madeCount;
         this.rateAverage = rateAverage;
         this.rateStars = rateStars;
         this.image = image;
@@ -63,14 +61,6 @@ public class Recipes {
 
     public void setKeenOnCount(int keenOnCount) {
         this.keenOnCount = keenOnCount;
-    }
-
-    public int getMadeCount() {
-        return madeCount;
-    }
-
-    public void setMadeCount(int madeCount) {
-        this.madeCount = madeCount;
     }
 
     public float getRateAverage() {
