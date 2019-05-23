@@ -47,6 +47,13 @@
                 android:text="Recipe pre info"
                 android:textSize="18sp" />
 
+            <TextView
+                android:id="@+id/txt_usuario"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text='Created  by "user"'
+                android:textAlignment="viewEnd" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"

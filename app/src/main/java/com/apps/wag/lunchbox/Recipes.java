@@ -8,11 +8,15 @@ public class Recipes {
     private int keenOnCount;
     private float rateAverage;
     private int rateStars;
+    private Usuario usuario;
     /*private String image;*/
     private int image;
+    private String ingredient;
+    private String steps;
 
     public Recipes(int cod, String title, String duration, String servings, int keenOnCount,
-                   float rateAverage, int rateStars, int image/*String image*/) {
+                   float rateAverage, int rateStars, int image/*String image*/, Usuario usuario,
+                   String ingredient, String steps) {
         this.cod = cod;
         this.title = title;
         this.duration = duration;
@@ -20,7 +24,10 @@ public class Recipes {
         this.keenOnCount = keenOnCount;
         this.rateAverage = rateAverage;
         this.rateStars = rateStars;
+        this.usuario = usuario;
         this.image = image;
+        this.ingredient = ingredient;
+        this.steps = steps;
     }
 
     public int getCod() {
@@ -93,5 +100,29 @@ public class Recipes {
 
     public void setImage(int image) {
         this.image = image;
+    }
+
+    public Usuario getUsuario(){
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    public String getIngredient() {
+        return ingredient;
+    }
+
+    public void setIngredient(String ingredient) {
+        this.ingredient = ingredient;
+    }
+
+    public String getSteps() {
+        return steps;
+    }
+
+    public void setSteps (String steps) {
+        this.steps = steps;
     }
 }

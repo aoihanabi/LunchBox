@@ -35,7 +35,6 @@ public class MyRecipeBook extends AppCompatActivity {
     private ProgressDialog pDialog;
     JSONParser jParser = new JSONParser();
     ArrayList<Recipes> recetas = new ArrayList<>();
-    private static String url_get_myrecipes = "https://darkreaperto.000webhostapp.com/lb_files/get_myRecipes.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,7 +105,7 @@ public class MyRecipeBook extends AppCompatActivity {
                 //Enviarle el código al php
                 params.add(new BasicNameValuePair("cod", codUsuario));
                 // getting JSON string from URL
-                JSONObject json = jParser.makeHttpRequest(url_get_myrecipes,"POST", params);
+                JSONObject json = jParser.makeHttpRequest(GlobalLinks.url_get_myrecipes,"POST", params);
 
                 // Check your log cat for JSON reponse
                 Log.d("All Recipes: ", json.toString());
@@ -125,11 +124,17 @@ public class MyRecipeBook extends AppCompatActivity {
                     for (int i = 0; i < recipes.length(); i++) {
 
                         JSONObject c = recipes.getJSONObject(i);
+
+                        Usuario usuario = new Usuario(c.getString("cod_users"), c.getString("name"),
+                                c.getString("email"), c.getString("password"),
+                                c.getString("description"));
+
                         Recipes recipe = new Recipes(c.getInt("cod"),
                                 c.getString("title"), c.getString("duration"),
                                 c.getString("servings"), c.getInt("keenOnCount"),
                                 (float) c.getDouble("rateAverage"),c.getInt("rateStars"),
-                                R.drawable.fresas);
+                                R.drawable.fresas, usuario, c.getString("ingredient"),
+                                c.getString("steps"));
 
                         recetas.add(recipe);
                     }

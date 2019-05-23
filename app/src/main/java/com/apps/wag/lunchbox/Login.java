@@ -51,9 +51,6 @@ public class Login extends AppCompatActivity {
     JSONParser jParser = new JSONParser();
     ArrayList<HashMap<String, String>> usersList;
 
-    // url to get all products list
-    private static String url_all_users = "https://darkreaperto.000webhostapp.com/lb_files/get_all_users.php";
-
     // JSON Node names
     private static final String TAG_SUCCESS = "success";
     private static final String TAG_USERS = "users";
@@ -250,7 +247,7 @@ public class Login extends AppCompatActivity {
             // Building Parameters
             List<NameValuePair> params = new ArrayList<NameValuePair>();
             // getting JSON string from URL
-            JSONObject json = jParser.makeHttpRequest(url_all_users, "GET", params);
+            JSONObject json = jParser.makeHttpRequest(GlobalLinks.url_all_users, "GET", params);
 
             // Check your log cat for JSON reponse
             Log.d("All Users: ", json.toString());

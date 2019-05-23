@@ -2,11 +2,10 @@ package com.apps.wag.lunchbox;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,9 +14,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,15 +39,13 @@ import java.util.List;
 public class FragInicio extends Fragment {
 
     private RecyclerView rvwRecipeIni;
-    private GridLayoutManager glm;
     private CardviewInicioAdapter adapter;
+    private Button btnKeen;
 
     //ESPECIFICOS PARA EL PARSEO
     // JSON Node names
     private static final String TAG_SUCCESS = "success";
     private static final String TAG_RECIPES = "recipes";
-    private static final String TAG_COD = "cod";
-    private static final String TAG_NAME = "name";
     // recipes JSONArray
     JSONArray recipes = null;
     // Progress Dialog
@@ -56,7 +55,9 @@ public class FragInicio extends Fragment {
     ArrayList<HashMap<String, String>> hashListRecipe;
     ArrayList<Recipes> recetas = new ArrayList<>();
     // url to get all products list
-    private static String url_all_recipes = "https://darkreaperto.000webhostapp.com/lb_files/get_all_recipes.php";
+    //private static String url_all_recipes = "https://darkreaperto.000webhostapp.com/lb_files/get_all_recipes.php";
+    private static String url_all_recipes = GlobalLinks.url_all_recipes;
+
 //    // TODO: Rename parameter arguments, choose names that match
 //    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 //    private static final String ARG_PARAM1 = "param1";
@@ -111,12 +112,25 @@ public class FragInicio extends Fragment {
 
 //        adapter = new CardviewInicioAdapter(getActivity(), dataSet());
 //        rvwRecipeIni.setAdapter(adapter);
-
         new LoadAllRecipes(getActivity(), rvwRecipeIni).execute();
+
 
         return rootView;
     }
 
+    @Override
+    @Nullable
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+
+        btnKeen = (Button) view.findViewById(R.id.btn_keenOnReceta);
+        btnKeen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Llamar procedimiento que actualice la cantidad de me gusta de la receta
+
+            }
+        });
+    }
 //    private ArrayList<Recipes> dataSet() {
 //
 ////        ArrayList<Recipes> data = new ArrayList<>();
@@ -189,6 +203,7 @@ public class FragInicio extends Fragment {
          * */
         @Override
         protected void onPreExecute() {
+
             super.onPreExecute();
             System.out.println("En PREexecute, SALE ALGO");
             pDialog = new ProgressDialog(myContext);
@@ -237,13 +252,126 @@ public class FragInicio extends Fragment {
 //                        // adding HashList to ArrayList
 //                        hashListRecipe.add(map);
 
+                        Usuario usuario = new Usuario(c.getString("cod_user"), c.getString("name"),
+                                c.getString("email"), c.getString("password"),
+                                c.getString("description"));
+
                         Recipes recipe = new Recipes(c.getInt("cod"),
                                 c.getString("title"), c.getString("duration"),
                                 c.getString("servings"), c.getInt("keenOnCount"),
                                 (float) c.getDouble("rateAverage"),
-                                c.getInt("rateStars"), R.drawable.fresas);
+                                c.getInt("rateStars"), R.drawable.fresas, usuario,
+                                c.getString("ingredient"), c.getString("steps"));
 
-                        System.out.println("RECETAS WHERE ARE YOU?" + c.getString("title"));
+                        System.out.println("RECETAS WHERE ARE YOU?" + c.getString("title")  + " y " + c.getString("ingredient"));
+                        recetas.add(recipe);
+                    }
+                }
+
+                System.out.println("+++++++++++++++++++++++++++");
+                System.out.println("+++++++++++++++++++++++++++");
+                System.out.println("+++++++++++++++++++++++++++");
+                for (int i=0; i<recetas.size(); i++) {
+                    System.out.println(recetas.get(i));
+                }
+                System.out.println("+++++++++++++++++++++++++++");
+                System.out.println("+++++++++++++++++++++++++++");
+                System.out.println("+++++++++++++++++++++++++++");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        /**
+         * After completing background task Dismiss the progress dialog
+         * **/
+        protected void onPostExecute(String file_url) {
+            // dismiss the dialog after getting all products
+            pDialog.dismiss();
+
+            // updating UI from Background Thread
+            getActivity().runOnUiThread(new Runnable() {
+                public void run() {
+
+                    System.out.println("POST EXECUTE");
+                    //Actualizar ListView
+                    adapter = new CardviewInicioAdapter(getActivity(), recetas);
+                    rvwRecipeIni.setAdapter(adapter);
+                }
+            });
+
+
+        }
+
+    }
+
+    /**
+     * Background Async Task to Add a keenOn count to a recipe by making HTTP Request
+     * */
+    class AddKeenOnCount extends AsyncTask<String, String, String> {
+
+        Activity myContext;
+        RecyclerView recyclerView;
+
+        public AddKeenOnCount(Activity context, RecyclerView rview) {
+            this.myContext = context;
+            this.recyclerView = rview;
+        }
+        /**
+         * Before starting background thread Show Progress Dialog
+         * */
+        @Override
+        protected void onPreExecute() {
+
+            super.onPreExecute();
+            System.out.println("En PREexecute, SALE ALGO");
+            pDialog = new ProgressDialog(myContext);
+            pDialog.setMessage("Se está agregando su voto. Por favor espere...");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(false);
+            pDialog.show();
+        }
+
+        /**
+         * getting All recipes from url
+         * */
+        protected String doInBackground(String... args) {
+            // Building Parameters
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add(new BasicNameValuePair("cod", codUsuario));
+
+            // getting JSON string from URL
+            JSONObject json = jParser.makeHttpRequest(GlobalLinks.url_add_keenOnCount, "POST", params);
+
+            // Check your log cat for JSON reponse
+            Log.d("Add keenOnCount: ", json.toString());
+
+            try {
+                // Checking for SUCCESS TAG
+                int success = json.getInt(TAG_SUCCESS--);
+
+                if (success == 1) {
+                    // recipe's keenOnCount updated
+                    // Getting Array of Users
+                    recipes = json.getJSONArray(TAG_RECIPES);
+
+                    // looping through All Products
+                    for (int i = 0; i < recipes.length(); i++) {
+                        JSONObject c = recipes.getJSONObject(i);
+
+                        Usuario usuario = new Usuario(c.getString("cod_user"), c.getString("name"),
+                                c.getString("email"), c.getString("password"),
+                                c.getString("description"));
+
+                        Recipes recipe = new Recipes(c.getInt("cod"),
+                                c.getString("title"), c.getString("duration"),
+                                c.getString("servings"), c.getInt("keenOnCount"),
+                                (float) c.getDouble("rateAverage"),
+                                c.getInt("rateStars"), R.drawable.fresas, usuario,
+                                c.getString("ingredient"), c.getString("steps"));
+
+                        System.out.println("RECETAS WHERE ARE YOU?" + c.getString("title")  + " y " + c.getString("ingredient"));
                         recetas.add(recipe);
                     }
                 }

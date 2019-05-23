@@ -119,10 +119,10 @@ public class FragPerfil extends Fragment {
         btnSavedRecipes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                System.out.println(getActivity());
-//                Intent inten = new Intent(getActivity(), .class);
-//                startActivity(inten);
-//                System.out.println(getActivity());
+                System.out.println(getActivity());
+                Intent inten = new Intent(getActivity(), SavedRecipes.class);
+                startActivity(inten);
+                System.out.println(getActivity());
             }
         });
     }

@@ -15,6 +15,7 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 
 public class RecipeListAdapter extends ArrayAdapter<Recipes> {
@@ -27,6 +28,8 @@ public class RecipeListAdapter extends ArrayAdapter<Recipes> {
     static class ViewHolder {
         TextView recipeTitle;
         ImageView recipePhoto;
+        TextView userName;
+        TextView recipeIngredient;
     }
 
     public RecipeListAdapter (Context context, int resource, ArrayList<Recipes> objects) {
@@ -50,10 +53,12 @@ public class RecipeListAdapter extends ArrayAdapter<Recipes> {
         int rateStars = getItem(position).getRateStars();
         //String imgURL = getItem(position).getImage();
         int imgURL = getItem(position).getImage();
+        Usuario usuario = getItem(position).getUsuario();
+        String ingredient = getItem(position).getIngredient();
+        String step = getItem(position).getSteps();
 
         Recipes laReceta = new Recipes(cod, title, duration, servings, keenOnCount,
-                rateAverage, rateStars, R.drawable.fresas);
-
+                rateAverage, rateStars, R.drawable.fresas, usuario, ingredient, step);
 
         //ViewHolder instance
         ViewHolder viewHolder;
@@ -68,6 +73,8 @@ public class RecipeListAdapter extends ArrayAdapter<Recipes> {
             viewHolder = new ViewHolder();
             viewHolder.recipeTitle = (TextView) convertView.findViewById(R.id.txtv_recipeName);
             viewHolder.recipePhoto = (ImageView) convertView.findViewById(R.id.imgVw_recipePhoto);
+            viewHolder.recipeIngredient = (TextView) convertView.findViewById(R.id.txt_ingredient);
+            viewHolder.userName = (TextView) convertView.findViewById(R.id.txt_userName);
 
             convertView.setTag(viewHolder);
         }
@@ -94,6 +101,14 @@ public class RecipeListAdapter extends ArrayAdapter<Recipes> {
         //Set ViewHolder's attributes
         viewHolder.recipeTitle.setText(title);
         viewHolder.recipePhoto.setImageResource(laReceta.getImage());
+        viewHolder.userName.setText("By: " + laReceta.getUsuario().getNomUsuario());
+
+        String[] ingre = laReceta.getIngredient().split("\\|");
+        String text = "";
+        for(int i = 0; i < ingre.length; i++) {
+            text += ingre[i] + ", ";
+        }
+        viewHolder.recipeIngredient.setText(text);
         return convertView;
     }
 

@@ -10,6 +10,7 @@ import android.util.Log;
 import android.widget.ListView;
 
 import org.apache.http.NameValuePair;
+import org.apache.http.io.SessionOutputBuffer;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,12 +27,11 @@ public class SavedRecipes extends AppCompatActivity {
     //ESPECIFICOS PARA EL PARSEO
     // JSON Node names
     private static final String TAG_SUCCESS = "success";
-    private static final String TAG_RECIPES = "myRecipes";
+    private static final String TAG_RECIPES = "savedrecipes";
     JSONArray recipes = null;
     private ProgressDialog pDialog;
     JSONParser jParser = new JSONParser();
     ArrayList<Recipes> recetas = new ArrayList<>();
-    private static String url_get_myrecipes = "https://darkreaperto.000webhostapp.com/lb_files/.php";
 
 
     @Override
@@ -64,7 +64,6 @@ public class SavedRecipes extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            System.out.println("En PREexecute, SALE ALGO");
             pDialog = new ProgressDialog(myContext);
             pDialog.setMessage("Cargando recetas. Por favor espere...");
             pDialog.setIndeterminate(false);
@@ -86,7 +85,7 @@ public class SavedRecipes extends AppCompatActivity {
                 //Enviarle el código al php
                 params.add(new BasicNameValuePair("cod", codUsuario));
                 // getting JSON string from URL
-                JSONObject json = jParser.makeHttpRequest(url_get_myrecipes,"POST", params);
+                JSONObject json = jParser.makeHttpRequest(GlobalLinks.url_get_savedrecipes,"POST", params);
 
                 // Check your log cat for JSON reponse
                 Log.d("All Recipes: ", json.toString());
@@ -105,11 +104,17 @@ public class SavedRecipes extends AppCompatActivity {
                     for (int i = 0; i < recipes.length(); i++) {
 
                         JSONObject c = recipes.getJSONObject(i);
+
+                        Usuario usuario = new Usuario(c.getString("cod_users"),
+                                c.getString("name"), c.getString("email"),
+                                c.getString("password"), c.getString("description"));
+
                         Recipes recipe = new Recipes(c.getInt("cod"),
                                 c.getString("title"), c.getString("duration"),
                                 c.getString("servings"), c.getInt("keenOnCount"),
                                 (float) c.getDouble("rateAverage"),c.getInt("rateStars"),
-                                R.drawable.fresas);
+                                R.drawable.fresas, usuario, c.getString("ingredient"),
+                                c.getString("steps"));
 
                         recetas.add(recipe);
                     }

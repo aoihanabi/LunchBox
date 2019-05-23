@@ -33,10 +33,6 @@ public class NewRecipe extends AppCompatActivity {
     // Progress Dialog
     private ProgressDialog pDialog;
     private JSONParser jsonParser = new JSONParser();
-    private static String url_create_recipe = "https://darkreaperto.000webhostapp.com/lb_files/create_recipe.php";
-    private static String url_create_ingredient = "https://darkreaperto.000webhostapp.com/lb_files/create_ingredient.php";
-    private static String url_create_step = "https://darkreaperto.000webhostapp.com/lb_files/create_step.php";
-    private static String url_create_myRecipe = "https://darkreaperto.000webhostapp.com/lb_files/create_myRecipe.php";
     private static final String TAG_SUCCESS = "success";
 
     @Override
@@ -103,18 +99,20 @@ public class NewRecipe extends AppCompatActivity {
             params.add(new BasicNameValuePair("keenOnCount", "0"));
             params.add(new BasicNameValuePair("rateAverage", "0"));
             params.add(new BasicNameValuePair("rateStars", "0"));
+            params.add(new BasicNameValuePair("ingredient", "No ingredients needed"));
+            params.add(new BasicNameValuePair("steps" , "Nothing to do"));
+
 
             // check for success tag
             try {
 
                 // getting JSON Object
                 // Note that create recipe url accepts POST method
-                JSONObject json = jsonParser.makeHttpRequest(url_create_recipe,
+                JSONObject json = jsonParser.makeHttpRequest(GlobalLinks.url_create_recipe,
                         "POST", params);
 
                 // check log cat for response
                 Log.d("Create Response", json.toString());
-
 
                 int success = json.getInt(TAG_SUCCESS);
                 int last_id = json.getInt("last_id");
@@ -127,43 +125,36 @@ public class NewRecipe extends AppCompatActivity {
                     /*
                         $_POST['cod_recipe']) && isset($_POST['nom']
                     */
-                    for (String ing: ingredientes) {
-                        params = new ArrayList<NameValuePair>();
-                        params.add(new BasicNameValuePair("cod_recipe", String.valueOf(last_id)));
-                        params.add(new BasicNameValuePair("nom", ing));
-
-                        json = jsonParser.makeHttpRequest(url_create_ingredient,
-                                "POST", params);
-                    }
+//                    for (String ing: ingredientes) {
+//                        params = new ArrayList<NameValuePair>();
+//                        params.add(new BasicNameValuePair("cod_recipe", String.valueOf(last_id)));
+//                        params.add(new BasicNameValuePair("nom", ing));
+//
+//                        json = jsonParser.makeHttpRequest(GlobalLinks.url_create_ingredient,
+//                                "POST", params);
+//                    }
 
                     // Crear instrucciones para la receta
                     /*
                         $_POST['cod_recipe'], $_POST['order'], $_POST['description']
                     */
-                    for (int i=0; i<preparacion.length; i++) {
-                        params = new ArrayList<NameValuePair>();
-                        params.add(new BasicNameValuePair("cod_recipe", String.valueOf(last_id)));
-                        params.add(new BasicNameValuePair("order", String.valueOf(i+1)));
-                        params.add(new BasicNameValuePair("description", preparacion[i]));
+//                    for (int i=0; i<preparacion.length; i++) {
+//                        params = new ArrayList<NameValuePair>();
+//                        params.add(new BasicNameValuePair("cod_recipe", String.valueOf(last_id)));
+//                        params.add(new BasicNameValuePair("order", String.valueOf(i+1)));
+//                        params.add(new BasicNameValuePair("description", preparacion[i]));
+//
+//                        json = jsonParser.makeHttpRequest(GlobalLinks.url_create_step,
+//                                "POST", params);
+//                    }
 
-                        json = jsonParser.makeHttpRequest(url_create_step,
-                                "POST", params);
-                    }
 
-
-//                    Toast.makeText(NewRecipe.this, "Usuario en sesión " +
-//                            userPref.getString("codigo", null) + ": " +
-//                            userPref.getString("username", null),
-//                            Toast.LENGTH_LONG).show();
                     //Crear myRecipe
                     params = new ArrayList<NameValuePair>();
                     params.add(new BasicNameValuePair("cod_user", codUsuario));
                     params.add(new BasicNameValuePair("cod_recipe", String.valueOf(last_id)));
-                    json = jsonParser.makeHttpRequest(url_create_myRecipe,
+                    json = jsonParser.makeHttpRequest(GlobalLinks.url_create_myRecipe,
                             "POST", params);
-
-//                    Toast.makeText(NewRecipe.this, "Receta creada exitosamente",
-//                            Toast.LENGTH_LONG).show();
 
                     // closing this screen
                     finish();

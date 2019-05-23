@@ -14,15 +14,17 @@ public class CardviewInicioAdapter extends RecyclerView.Adapter<CardviewInicioAd
 
     class crdvwInicioViewHolder extends RecyclerView.ViewHolder{
 
-        ImageView imgMusica;
+        ImageView imgReceta;
         TextView txtTituloReceta;
         TextView txtDescripReceta;
+        TextView txtCreadorReceta;
 
         public crdvwInicioViewHolder(View itemView) {
             super(itemView);
-            imgMusica = (ImageView) itemView.findViewById(R.id.img_receta);
+            imgReceta = (ImageView) itemView.findViewById(R.id.img_receta);
             txtTituloReceta = (TextView) itemView.findViewById(R.id.txt_tituloReceta);
             txtDescripReceta = (TextView) itemView.findViewById(R.id.txt_descripcionReceta);
+            txtCreadorReceta = (TextView) itemView.findViewById(R.id.txt_usuario);
         }
     }
 
@@ -42,10 +44,15 @@ public class CardviewInicioAdapter extends RecyclerView.Adapter<CardviewInicioAd
 
     @Override
     public void onBindViewHolder(crdvwInicioViewHolder holder, int position) {
+
         Recipes recipe = recetas.get(position);
-        holder.imgMusica.setImageResource(recipe.getImage());
+        holder.imgReceta.setImageResource(recipe.getImage());
         holder.txtTituloReceta.setText(recipe.getTitle());
-        holder.txtDescripReceta.setText(String.valueOf(recipe.getDuration()));
+
+        String[] steps = recipe.getSteps().split("\\|");
+        holder.txtDescripReceta.setText(steps[0]);
+
+        holder.txtCreadorReceta.setText("By " + recipe.getUsuario().getNomUsuario());
     }
 
     @Override

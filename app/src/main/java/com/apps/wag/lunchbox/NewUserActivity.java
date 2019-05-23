@@ -31,9 +31,6 @@ public class NewUserActivity extends Activity {
     String inputPassword;
     String inputDescripcion;
 
-    // url to create new user
-    private static String url_create_user = "https://darkreaperto.000webhostapp.com/lb_files/create_user.php";
-
     // JSON Node names
     private static final String TAG_SUCCESS = "success";
 
@@ -98,7 +95,7 @@ public class NewUserActivity extends Activity {
 
             // getting JSON Object
             // Note that create user url accepts POST method
-            JSONObject json = jsonParser.makeHttpRequest(url_create_user,
+            JSONObject json = jsonParser.makeHttpRequest(GlobalLinks.url_create_user,
                     "POST", params);
 
             // check log cat for response
