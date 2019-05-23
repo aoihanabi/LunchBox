@@ -2,6 +2,8 @@ package com.apps.wag.lunchbox;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,6 +13,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.adroitandroid.chipcloud.ChipCloud;
+import com.adroitandroid.chipcloud.ChipListener;
+import com.adroitandroid.chipcloud.FlowLayout;
 
 
 ///**
@@ -103,7 +109,36 @@ public class FragPerfil extends Fragment {
         txtUsermail.setText(pref.getString("usermail", "Correo usuario"));
         txtUserinfo.setText(pref.getString("descripcion", "Breve descripción del usuario"));
 
-
+    final String[] prueba = {"Vegano","Vegetariano", "Carnes", "Pastas"};
+        ChipCloud chipCloud = (ChipCloud) view.findViewById(R.id.chip_cloud);
+        new ChipCloud.Configure()
+                .chipCloud(chipCloud)
+                .selectedColor(Color.parseColor("#8cff9f"))
+                .selectedFontColor(Color.parseColor("#333333"))
+                .deselectedColor(Color.parseColor("#ff9f8c"))
+                .deselectedFontColor(Color.parseColor("#ffffff"))
+                .selectTransitionMS(500)
+                .deselectTransitionMS(250)
+                .labels(prueba)
+                .mode(ChipCloud.Mode.SINGLE)
+                .allCaps(false)
+                .gravity(ChipCloud.Gravity.LEFT)
+                .textSize(getResources().getDimensionPixelSize(R.dimen.default_textsize))
+                .verticalSpacing(getResources().getDimensionPixelSize(R.dimen.vertical_spacing))
+                .minHorizontalSpacing(getResources().getDimensionPixelSize(R.dimen.min_horizontal_spacing))
+                //.typeface(Typeface.createFromAsset(getContext().getAssets(), "RobotoSlab-Regular.ttf"))
+                .chipListener(new ChipListener() {
+                    @Override
+                    public void chipSelected(int index) {
+                        //...
+                        System.out.println("chip selected: " +  prueba[index]);
+                    }
+                    @Override
+                    public void chipDeselected(int index) {
+                        //...
+                    }
+                })
+                .build();
         btnRcpbook = (Button) view.findViewById(R.id.btn_recipebook);
         btnRcpbook.setOnClickListener(new View.OnClickListener() {
             @Override
