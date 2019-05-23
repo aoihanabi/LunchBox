@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,6 +19,7 @@ public class CardviewInicioAdapter extends RecyclerView.Adapter<CardviewInicioAd
         TextView txtTituloReceta;
         TextView txtDescripReceta;
         TextView txtCreadorReceta;
+        Button btnKeen;
 
         public crdvwInicioViewHolder(View itemView) {
             super(itemView);
@@ -25,6 +27,8 @@ public class CardviewInicioAdapter extends RecyclerView.Adapter<CardviewInicioAd
             txtTituloReceta = (TextView) itemView.findViewById(R.id.txt_tituloReceta);
             txtDescripReceta = (TextView) itemView.findViewById(R.id.txt_descripcionReceta);
             txtCreadorReceta = (TextView) itemView.findViewById(R.id.txt_usuario);
+            btnKeen = (Button) itemView.findViewById(R.id.btn_keenOnReceta);
+
         }
     }
 
@@ -53,6 +57,14 @@ public class CardviewInicioAdapter extends RecyclerView.Adapter<CardviewInicioAd
         holder.txtDescripReceta.setText(steps[0]);
 
         holder.txtCreadorReceta.setText("By " + recipe.getUsuario().getNomUsuario());
+        holder.btnKeen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Llamar procedimiento que actualice la cantidad de me gusta de la receta
+                System.out.println("KEEN ON PRESSED");
+            }
+        });
+
     }
 
     @Override

@@ -109,6 +109,7 @@ public class FragInicio extends Fragment {
 
         rvwRecipeIni = (RecyclerView) rootView.findViewById(R.id.rvw_inicio);
         rvwRecipeIni.setLayoutManager(new LinearLayoutManager(getActivity()));
+        btnKeen = (Button) rootView.findViewById(R.id.btn_keenOnReceta);
 
 //        adapter = new CardviewInicioAdapter(getActivity(), dataSet());
 //        rvwRecipeIni.setAdapter(adapter);
@@ -122,14 +123,7 @@ public class FragInicio extends Fragment {
     @Nullable
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 
-        btnKeen = (Button) view.findViewById(R.id.btn_keenOnReceta);
-        btnKeen.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Llamar procedimiento que actualice la cantidad de me gusta de la receta
 
-            }
-        });
     }
 //    private ArrayList<Recipes> dataSet() {
 //
@@ -205,7 +199,6 @@ public class FragInicio extends Fragment {
         protected void onPreExecute() {
 
             super.onPreExecute();
-            System.out.println("En PREexecute, SALE ALGO");
             pDialog = new ProgressDialog(myContext);
             pDialog.setMessage("Cargando recetas. Por favor espere...");
             pDialog.setIndeterminate(false);
@@ -298,6 +291,9 @@ public class FragInicio extends Fragment {
                     //Actualizar ListView
                     adapter = new CardviewInicioAdapter(getActivity(), recetas);
                     rvwRecipeIni.setAdapter(adapter);
+
+
+
                 }
             });
 
@@ -339,7 +335,7 @@ public class FragInicio extends Fragment {
         protected String doInBackground(String... args) {
             // Building Parameters
             List<NameValuePair> params = new ArrayList<NameValuePair>();
-            params.add(new BasicNameValuePair("cod", codUsuario));
+   //         params.add(new BasicNameValuePair("cod", codUsuario));
 
             // getting JSON string from URL
             JSONObject json = jParser.makeHttpRequest(GlobalLinks.url_add_keenOnCount, "POST", params);
@@ -349,7 +345,7 @@ public class FragInicio extends Fragment {
 
             try {
                 // Checking for SUCCESS TAG
-                int success = json.getInt(TAG_SUCCESS--);
+                int success = 0; //json.getInt(TAG_SUCCESS--);
 
                 if (success == 1) {
                     // recipe's keenOnCount updated
